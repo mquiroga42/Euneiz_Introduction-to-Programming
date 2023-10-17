@@ -89,7 +89,7 @@ def generate_password():
         character_list += string.punctuation
     return ''.join(random.choice(character_list) for _ in range(config.length))
 
-def generate_password_list(main_menu):
+def generate_password_list():
     """
     Generate a list of random passwords.
     Args:

@@ -5,7 +5,7 @@ import os
 import time
 import pyfiglet
 from simple_term_menu import TerminalMenu
-from password import PasswordConfig, generate_password, generate_password_list
+from password import generate_password, generate_password_list
 
 def main_menu():
     """
@@ -20,10 +20,9 @@ def main_menu():
         menu_entry_index = terminal_menu.show()
         # Menu Actions
         if menu_entry_index == 0:
-            config = PasswordConfig()
-            print(generate_password(config))
+            print(generate_password())
         if menu_entry_index == 1:
-            generate_password_list(main_menu)
+            generate_password_list()
         if menu_entry_index == 2:
             return
 
