@@ -15,7 +15,9 @@ def main_menu():
         os.system("clear")
         print(pyfiglet.figlet_format("Menu", font="big", justify="center", width=100))
         # Menu Options
-        options = ["[1] Password Generator", "[2] Dictionary Generator", "[3] Exit"]
+        options = [ "[1] Automatic Password Generator",
+                    "[2] Dictionary Generator",
+                    "[3] Exit"]
         terminal_menu = TerminalMenu(options)
         menu_entry_index = terminal_menu.show()
         # Menu Actions

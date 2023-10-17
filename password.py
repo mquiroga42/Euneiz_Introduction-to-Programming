@@ -33,6 +33,10 @@ config = PasswordConfig()
 def password_config_menu():
     """
     Menu for configuring the password.
+    Args:
+    None
+    Returns:
+    PasswordConfig: The configuration for the password.
     """
     while True:
         os.system("clear")
