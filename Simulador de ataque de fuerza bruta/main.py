@@ -13,6 +13,8 @@ def menu():
     pasword_configured = False
     password = ""
     dictionary = ""
+    content = ""
+
     while True:
         os.system("clear")
         print(pyfiglet.figlet_format("Menu", font="big", justify="center"))
@@ -27,11 +29,14 @@ def menu():
         if menu_entry_index == 0:
             if pasword_configured:
                 if dictionary:
-                    for password_attempt in dictionary:
-                        if password_attempt == password:
-                            print("Password found.")
-                            time.sleep(1)
+                    for word in content:
+                        if word == password:
+                            print(f"Password found: {password}")
+                            time.sleep(10)
                             break
+                    else:
+                        print("Password not found")
+                        time.sleep(1)
                 else:
                     print("The dictionary is not loaded. Please configure the dictionary first.")
                     time.sleep(1)
@@ -40,16 +45,22 @@ def menu():
                 time.sleep(1)
         if menu_entry_index == 1:
             while True:
-                password = input("Añade la contraseña a buscar: ")
+                password = input("Add the password to search: ")
                 if len(password) == 5:
                     pasword_configured = True
+                    print("The password has been configured correctly")
+                    time.sleep(0.5)
                     break
+                else:
+                    print("Enter a 5-character password")
+                    time.sleep(0.5)
+        
         if menu_entry_index == 2:
             while True:
-                dictionary_tosearch = input("Añade el nombre del diccionario: ")
+                dictionary_tosearch = input("Add the dictionary name: ")
                 try:
                     with open(dictionary_tosearch, "r", encoding="utf-8") as dictionary:
-                        content = dictionary.read()
+                        content = dictionary.read().split()
                         if content:
                             print("Dictionary loaded successfully.")
                             time.sleep(0.5)
