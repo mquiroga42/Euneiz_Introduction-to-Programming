@@ -1,90 +1,136 @@
-"""
-Main file of the program.
-"""
 import os
 import re
 import time
-import datetime
+from datetime import datetime, timedelta
 import pyfiglet
 from simple_term_menu import TerminalMenu
 
-def get_log_file(service):
-    """
-    Function that returns the log file of the specified service.
-    Parameters:
-        service (str): Name of the service.
-    Returns:
-        str: Name of the log file.
-    """
-    if service == "SSH":
-        return "auth.log"
-    return ""
+def detect_apache_bruteforce(logfile):
+    failed_attempts = {}
+    alert_threshold = 10
+    time_window = 5  # Cambiado a minutos
+    ip_alerted = set()
 
-def scan_logs(service):
-    """
-    Function that scans the logs of the specified service and returns a log entry that meets the criteria.
-    """
-    log_file = get_log_file(service)
-    with open(log_file, 'r', encoding="utf-8") as file:
-        log_entries = file.readlines()
+    brute_force_details = []  # Lista para almacenar detalles de ataques de fuerza bruta
 
-    brute_force_attempts = {}
+    # Leer el archivo de registro
+    with open(logfile, "r") as log:
+        for line in log:
+            if "GET /login.html" in line and " 401 " in line:
+                parts = line.split()
+                timestamp = parts[3] + " " + parts[4]  # Tomar la fecha y hora
 
-    for entry in log_entries:
-        match = re.search(r'Failed password for (.+) from (\d+\.\d+\.\d+\.\d+)', entry)
-        if match:
-            _, ip_address = match.group(1), match.group(2)
-            now = datetime.datetime.now()
-            print(entry)
-            if ip_address in brute_force_attempts:
-                brute_force_attempts[ip_address]["attempts"] += 1
+                # Extraer la hora de la cadena
+                log_time = datetime.strptime(timestamp, "[%d/%b/%Y:%H:%M:%S +%f]")
+                ip = parts[0]
+
+                if ip in failed_attempts:
+                    if (log_time - failed_attempts[ip][-1]) <= timedelta(minutes=time_window):
+                        failed_attempts[ip].append(log_time)
+                        if len(failed_attempts[ip]) >= alert_threshold and ip not in ip_alerted:
+                            ip_alerted.add(ip)
+                            brute_force_details.append(ip)  # Almacenar detalles de ataques
+                    else:
+                        failed_attempts[ip] = [log_time]
+                else:
+                    failed_attempts[ip] = [log_time]
+
+    return brute_force_details  # Devolver detalles de ataques de fuerza bruta en Apache
+
+def detect_bruteforce_ssh(logfile):
+    failed_attempts = {}
+    alert_threshold = 10
+    time_window = 5  # Cambiado a minutos
+    ip_alerted = set()
+
+    brute_force_details = []  # Lista para almacenar detalles de ataques de fuerza bruta
+
+    # Leer el archivo de registro
+    with open(logfile, "r") as log:
+        for line in log:
+            if "sshd" in line and "Failed password" in line:
+                parts = line.split()
+                timestamp = parts[0] + " " + parts[1] + " " + parts[2]  # Tomar solo el mes, día y hora
+
+                # Extraer la hora de la cadena
+                log_time = datetime.strptime(timestamp, "%b %d %H:%M:%S")
+                ip = re.search(r'\d+\.\d+\.\d+\.\d+', line)
+                if ip:
+                    ip = ip.group()
+                else:
+                    continue  # Ignorar líneas sin dirección IP
+
+                user = None
+                # Buscar el usuario
+                user_match = re.search(r'for (\w+) from', line)
+                if user_match:
+                    user = user_match.group(1)
+
+                if ip in failed_attempts:
+                    if (log_time - failed_attempts[ip][-1]) <= timedelta(minutes=time_window):
+                        failed_attempts[ip].append(log_time)
+                        if len(failed_attempts[ip]) >= alert_threshold and ip not in ip_alerted:
+                            ip_alerted.add(ip)
+                            brute_force_details.append((ip, user))  # Almacenar detalles de ataques
+                    else:
+                        failed_attempts[ip] = [log_time]
+                else:
+                    failed_attempts[ip] = [log_time]
+
+    return brute_force_details  # Devolver detalles de ataques de fuerza bruta
+
+def detect_brute_force_menu():
+    while True:
+        os.system("clear")
+        print(pyfiglet.figlet_format("Detect Brute Force", font="big", justify="center"))
+        # Submenu Options
+        options = ["[1] SSH", "[2] Apache", "[3] Back to Main Menu"]
+        submenu = TerminalMenu(options)
+        submenu_entry_index = submenu.show()
+
+        if submenu_entry_index == 0:
+            logfile = "/workspaces/Euneiz_Introduction-to-Programming/Analisis de logs/auth.log"  # Ruta al archivo de registro de SSH, ajusta según tu sistema
+            print("Detecting Brute Force for SSH...")
+            brute_force_details = detect_bruteforce_ssh(logfile)
+            if brute_force_details:
+                for ip, user in brute_force_details:
+                    print(f"Alert: Brute Force Detected in SSH from IP: {ip}, User: {user}")
             else:
-                brute_force_attempts[ip_address] = {}
-                brute_force_attempts[ip_address]["start_time"] = now
-                brute_force_attempts[ip_address]["log"] = entry
-                brute_force_attempts[ip_address]["attempts"] = 1
-        brute_force = any
-        brute_force = [entry for entry in brute_force_attempts.values() if entry["attempts"] >= 10]
-        if brute_force:
-            return brute_force_attempts
-    return None
+                print("No Brute Force Detected")
+            input("Press Enter to continue...")
+        elif submenu_entry_index == 1:
+            logfile = "/workspaces/Euneiz_Introduction-to-Programming/Analisis de logs/access.log"  # Ruta al archivo de registro de Apache, ajusta según tu sistema
+            print("Detecting Brute Force for Apache...")
+            brute_force_details = detect_apache_bruteforce(logfile)
+            if brute_force_details:
+                for ip in brute_force_details:
+                    print(f"Alert: Brute Force Detected in Apache from IP: {ip}")
+            else:
+                print("No Brute Force Detected")
+            input("Press Enter to continue...")
+        elif submenu_entry_index == 2:
+            break
 
 def main_menu():
-    """
-    Function that displays the program's main menu.
-    """
-    service = ""
     while True:
         os.system("clear")
         print(pyfiglet.figlet_format("Menu", font="big", justify="center"))
-        # Menu Options
-        options = [ "[1] Check Logs - Brute Force Attacks",
-                    "[-] Select Service (SSH) Disabled",
-                    "[3] Exit"]
-        terminal_menu = TerminalMenu(options)
-        menu_entry_index = terminal_menu.show()
-        # Menu Actions
-        if menu_entry_index == 0:
-            if service != "":
-                print(scan_logs(service))
-                input("Press Enter to continue...")
-            else:
-                print("You must select a service first.")
-                time.sleep(1)
-        if menu_entry_index == 1:
-            service = "SSH"
-        if menu_entry_index == 2:
+        # Main Menu Options
+        options = ["[1] Detect Brute Force", "[2] Exit"]
+        main_menu = TerminalMenu(options)
+        main_menu_entry_index = main_menu.show()
+
+        if main_menu_entry_index == 0:
+            detect_brute_force_menu()
+        elif main_menu_entry_index == 1:
             return
 
 def main():
-    """
-    Main function of the program.
-    """
     os.system("clear")
     print(pyfiglet.figlet_format("Euneiz", font="big", justify="center"))
     time.sleep(0.5)
     os.system("clear")
-    print(pyfiglet.figlet_format("Project:\nLogs analitics", font="big", justify="center", width=100))
+    print(pyfiglet.figlet_format("Project:\nLogs analytics", font="big", justify="center", width=100))
     time.sleep(0.5)
     main_menu()
 
