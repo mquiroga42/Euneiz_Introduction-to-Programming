@@ -1,11 +1,14 @@
 """
 Main file of the program.
 """
+
+# Importación de módulos necesarios
 import os
 import time
 import pyfiglet
 from simple_term_menu import TerminalMenu
 
+# Función para mostrar el menú principal
 def menu():
     """
     Function that displays the program's main menu.
@@ -18,14 +21,14 @@ def menu():
     while True:
         os.system("clear")
         print(pyfiglet.figlet_format("Menu", font="big", justify="center"))
-        # Menu Options
+        # Opciones del menú
         options = [ "[1] Brute Force",
                     "[2] Password to search",
-                    "[3] Configure Library #Ifnotconfigured slowattack",
+                    "[3] Configure Library #If not configured slowattack",
                     "[4] Exit"]
         terminal_menu = TerminalMenu(options)
         menu_entry_index = terminal_menu.show()
-        # Menu Actions
+        # Acciones del menú
         if menu_entry_index == 0:
             if pasword_configured:
                 if dictionary:
@@ -72,6 +75,7 @@ def menu():
         if menu_entry_index == 3:
             break
 
+# Función principal del programa
 def main():
     """
     Main function of the program.
@@ -84,5 +88,6 @@ def main():
     time.sleep(0.5)
     menu()
 
+# Punto de entrada principal del programa
 if __name__ == "__main__":
     main()
