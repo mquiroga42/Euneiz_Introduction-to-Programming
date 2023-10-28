@@ -4,6 +4,7 @@ import time
 import pyfiglet
 from simple_term_menu import TerminalMenu
 
+# Función para decodificar una cadena en base64
 def decode_base64(string_codificado):
     try:
         string_decodificado = base64.b64decode(string_codificado).decode('utf-8')
@@ -11,6 +12,7 @@ def decode_base64(string_codificado):
     except Exception as e:
         return f"Error: {e}"
 
+# Función para codificar una cadena en base64
 def encode_base64(string_decodificado):
     try:
         string_codificado = base64.b64encode(string_decodificado.encode('utf-8')).decode('utf-8')
@@ -18,11 +20,11 @@ def encode_base64(string_decodificado):
     except Exception as e:
         return f"Error: {e}"
 
+# Función para mostrar el menú de opciones
 def menu():
     string_decodificado = ""
     string_codificado = ""
-    content = ""
-
+    
     while True:
         os.system("clear")
         print(pyfiglet.figlet_format("Menu", font="big", justify="center"))
@@ -53,6 +55,7 @@ def menu():
         elif menu_entry_index == 2:
             break
 
+# Función principal
 def main():
     os.system("clear")
     print(pyfiglet.figlet_format("Euneiz", font="big", justify="center", width=100))
