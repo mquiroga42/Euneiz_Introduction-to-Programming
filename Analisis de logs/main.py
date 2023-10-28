@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import pyfiglet
 from simple_term_menu import TerminalMenu
 
+# Función para detectar ataques de fuerza bruta en registros de Apache
 def detect_apache_bruteforce(logfile):
     failed_attempts = {}
     alert_threshold = 10
@@ -37,6 +38,7 @@ def detect_apache_bruteforce(logfile):
 
     return brute_force_details  # Devolver detalles de ataques de fuerza bruta en Apache
 
+# Función para detectar ataques de fuerza bruta en registros de SSH
 def detect_bruteforce_ssh(logfile):
     failed_attempts = {}
     alert_threshold = 10
@@ -79,6 +81,7 @@ def detect_bruteforce_ssh(logfile):
 
     return brute_force_details  # Devolver detalles de ataques de fuerza bruta
 
+# Función para mostrar un menú de detección de ataques de fuerza bruta
 def detect_brute_force_menu():
     while True:
         os.system("clear")
@@ -111,6 +114,7 @@ def detect_brute_force_menu():
         elif submenu_entry_index == 2:
             break
 
+# Función para mostrar el menú principal
 def main_menu():
     while True:
         os.system("clear")
@@ -125,6 +129,7 @@ def main_menu():
         elif main_menu_entry_index == 1:
             return
 
+# Función principal
 def main():
     os.system("clear")
     print(pyfiglet.figlet_format("Euneiz", font="big", justify="center"))
