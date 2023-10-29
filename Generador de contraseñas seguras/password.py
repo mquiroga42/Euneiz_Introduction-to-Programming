@@ -1,6 +1,5 @@
 """
-password.py: Este módulo proporciona funciones para generar contraseñas.
-Incluye funciones para generar contraseñas aleatorias con diferentes configuraciones.
+This module contains the functions for generating passwords.
 """
 import os
 import string
@@ -12,14 +11,12 @@ from download import download_dictionary
 class PasswordConfig:
     """
     Class that contains the configuration for generating passwords.
-
     Attributes:
     length (int): The length of the password.
     upper_case (bool): If the password should include uppercase letters.
     lower_case (bool): If the password should include lowercase letters.
     numbers (bool): If the password should include numbers.
     symbols (bool): If the password should include symbols.
-
     """
     def __init__(self, length=12, upper_case=True, lower_case=True, numbers=True, symbols=True):
         self.length = length
@@ -72,13 +69,10 @@ def password_config_menu():
 def generate_password():
     """
     Generate a random password.
-
     Args:
-    config (PasswordConfig): The configuration for the password to generate.
-
+    None
     Returns:
     str: The generated password.
-
     """
     os.system("clear")
     print(pyfiglet.figlet_format("Password", font="slant"))

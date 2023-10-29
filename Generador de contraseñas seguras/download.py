@@ -1,7 +1,5 @@
 """
-download.py: Este módulo proporciona funciones para descargar información o datos.
-
-Incluye funciones para descargar archivos o datos desde diferentes fuentes, como la web, bases de datos, etc.
+Download a list of words to a text file.
 """
 
 def download_dictionary(word_list, file_name):
