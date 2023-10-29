@@ -2,22 +2,23 @@
 Main file of the program.
 """
 
-# Importación de módulos necesarios
 import os
 import time
 import pyfiglet
 from simple_term_menu import TerminalMenu
 
-# Función para mostrar el menú principal
 def menu():
     """
     Function that displays the program's main menu.
+    Args:
+    None
+    Returns:
+    None
     """
     pasword_configured = False
     password = ""
     dictionary = ""
     content = ""
-
     while True:
         os.system("clear")
         print(pyfiglet.figlet_format("Menu", font="big", justify="center"))
@@ -57,7 +58,6 @@ def menu():
                 else:
                     print("Enter a 5-character password")
                     time.sleep(0.5)
-        
         if menu_entry_index == 2:
             while True:
                 dictionary_tosearch = input("Add the dictionary name: ")
@@ -75,10 +75,13 @@ def menu():
         if menu_entry_index == 3:
             break
 
-# Función principal del programa
 def main():
     """
     Main function of the program.
+    Args:
+    None
+    Returns:
+    None
     """
     os.system("clear")
     print(pyfiglet.figlet_format("Euneiz", font="big", justify="center"))
@@ -88,6 +91,5 @@ def main():
     time.sleep(0.5)
     menu()
 
-# Punto de entrada principal del programa
 if __name__ == "__main__":
     main()
