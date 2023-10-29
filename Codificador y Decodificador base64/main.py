@@ -57,7 +57,7 @@ def menu():
             if string_codificado:
                 string_decodificado = decode_base64(string_codificado)
                 print(f"Decoded string: {string_decodificado}")
-                time.sleep(2)
+                input("Press Enter to continue...")
             else:
                 print("You must provide a string to decode")
                 time.sleep(1)
@@ -66,7 +66,7 @@ def menu():
             if string_decodificado:
                 string_codificado = encode_base64(string_decodificado)
                 print(f"Encoded string: {string_codificado}")
-                time.sleep(2)
+                input("Press Enter to continue...")
             else:
                 print("You must provide a string to encode")
                 time.sleep(1)
