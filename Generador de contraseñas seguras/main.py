@@ -26,6 +26,7 @@ def main_menu():
         # Acciones del menú
         if menu_entry_index == 0:
             print(generate_password())
+            time.sleep(5)
         if menu_entry_index == 1:
             generate_password_list()
         if menu_entry_index == 2:
