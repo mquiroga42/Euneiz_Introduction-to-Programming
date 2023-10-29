@@ -46,9 +46,15 @@ def configure_firewall():
         if len(blocked_list) > menu_entry_index:
             print("Edit IP")
         elif menu_entry_index == len(blocked_list):
-            print("Remove IP from Block List")
+            ip_to_add = input("Enter IP to add to Block List: ")
+            protocols_to_block = input("Enter protocols to block (separated by spaces): ")
+            blocked_list[ip_to_add] = protocols_to_block.split()
         elif menu_entry_index == len(blocked_list) + 1:
-            print("Remove Protocol from Block List")
+            ip_to_delete = input("Enter IP to delete from Block List: ")
+            if ip_to_delete in blocked_list:
+                del blocked_list[ip_to_delete]
+            else:
+                print("Input not found in Block List")
         if menu_entry_index == len(blocked_list) + 2:
             return
 
